@@ -159,10 +159,10 @@ const addDepartment = () => {
       {
         type: 'input',
         name: 'newDepartment',
-        message: "What is the name of the department you would like to add?"
+        message: "What is the name of the department you would like to add?",
       }
     ]).then((answer) => {
-      connection.query(`INSERT INTO department (name) VLAUES (?)`,
+      connection.query(`INSERT INTO department (name) VALUES (?)`,
         {
           name: answer.newDepartment
         },
@@ -240,6 +240,7 @@ const updateEmpRole = () => {
     });
   });
 };
+
 
 
 
