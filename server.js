@@ -66,12 +66,12 @@ const viewAllEmp = () => {
 }
 
 const viewEmpByDepart = () => {
-db.findAllDepartments()
-.then(([rows]) => {
-  let departments = rows
-  console.table(departments)
-})
-.then(() => start())
+  db.findAllDepartments()
+    .then(([rows]) => {
+      let departments = rows
+      console.table(departments)
+    })
+    .then(() => start())
 }
 
 const viewAllRoles = () => {
@@ -153,40 +153,61 @@ const addEmployee = () => {
     });
 };
 
+const addDepartment = () => {
+  connection.query("SELECT * FROM department", (err, departments) => {
+    inquirer.prompt([
+      {
+        type: 'input',
+        name: 'newDepartment',
+        message: "What is the name of the department you would like to add?"
+      }
+    ]).then((answer) => {
+      connection.query(`INSERT INTO department (name) VLAUES (?)`,
+        {
+          name: answer.newDepartment
+        },
+        (err) => {
+          if (err) throw err
+          console.table("A new department has been added!");
+          start();
+        })
+    });
+  })
+}
 
 const addRole = () => {
   connection.query("SELECT * FROM department", (err, departments) => {
-    inquirer.prompt ([
+    inquirer.prompt([
       {
-        type:'input',
-        name:'title',
+        type: 'input',
+        name: 'title',
         message: "Please enter the new role:"
       },
       {
-        type:'input',
-        name:'salary',
-        messag:"Please enter the salary for this role:"
+        type: 'input',
+        name: 'salary',
+        messag: "Please enter the salary for this role:"
       },
       {
-        type:'list',
-        name:'department',
-        message:"Please select the department for this role:",
+        type: 'list',
+        name: 'department',
+        message: "Please select the department for this role:",
         choices: departments.map(department => {
           return { name: department.name, value: department.id }
         })
       },
     ]).then((answer) => {
       connection.query(`INSERT INTO role SET ?`,
-      {
-        title: answer.title,
-        salary: answer.salary,
-        department_id: answer.department
-      },
-      (err) => {
-        if (err) throw err
-        console.table("Your new role has been added.");
-        start();
-      })
+        {
+          title: answer.title,
+          salary: answer.salary,
+          department_id: answer.department
+        },
+        (err) => {
+          if (err) throw err
+          console.table("Your new role has been added.");
+          start();
+        })
     })
   })
 }

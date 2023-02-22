@@ -24,8 +24,6 @@ class DB {
             "INSERT INTO employee SET ?", employee
         )
     }
-    // create new department
-    // update an employee
 }
 
 module.exports = new DB(connection)
