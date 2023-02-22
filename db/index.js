@@ -24,12 +24,12 @@ class DB {
             "INSERT INTO employee SET ?", employee
         )
     }
-    // create new role
-    createNewRole(role) {
-        return this.connection.promise().query(
-            `INSERT INTO role SET ? `, role
-        )
-    }
+    // // create new role
+    // createNewRole(role) {
+    //     return this.connection.promise().query(
+    //         `INSERT INTO role SET ? `, role
+    //     )
+    // }
 
     
     // create new department
