@@ -3,6 +3,9 @@ const db = require('./db/index');
 require('console.table');
 start();
 
+const connection = require('./db/connection')
+
+
 function start() {
   inquirer.prompt({
     type: 'list',
@@ -150,49 +153,49 @@ const addRole = () => {
   let departments;
 
   db.findAllDepartments()
-        .then(([rows]) => {
-          departments = rows
-          const departmentChoice = departments.map(({ id, title }) => ({
-            name: title,
-            value: id
-          }))
-          inquirer.prompt({
-            type: 'list',
-            name: 'roleId',
-            message: "What is the employee's role?",
-            choices: roleChoices
-          })
-            .then(answer => {
-              let roleId = answer.roleId
-              db.findAllEmployees()
-                .then(([rows]) => {
-                  let employees = rows
-                  const managerChoices = departments.map(({ id, first_name, last_name }) => ({
-                    name: `${first_name} ${last_name}`,
-                    value: id
-                  }))
-                  managerChoices.unshift({ name: 'None', value: NULL })
-                  inquirer.prompt({
-                    type: 'list',
-                    name: 'managerId',
-                    message: "Who is the employee's manager?",
-                    choices: managerChoices
-                  })
-                    .then(answer => {
-                      let employee = {
-                        manager_id: answer.managerId,
-                        role_id: roleId,
-                        first_name: firstName,
-                        last_name: lastName
-                      }
-                      db.createEmployee(employee)
-                    })
-                    .then(() => start())
+    .then(([rows]) => {
+      departments = rows
+      const departmentChoice = departments.map(({ id, title }) => ({
+        name: title,
+        value: id
+      }))
+      inquirer.prompt({
+        type: 'list',
+        name: 'roleId',
+        message: "What is the employee's role?",
+        choices: roleChoices
+      })
+        .then(answer => {
+          let roleId = answer.roleId
+          db.findAllEmployees()
+            .then(([rows]) => {
+              let employees = rows
+              const managerChoices = departments.map(({ id, first_name, last_name }) => ({
+                name: `${first_name} ${last_name}`,
+                value: id
+              }))
+              managerChoices.unshift({ name: 'None', value: NULL })
+              inquirer.prompt({
+                type: 'list',
+                name: 'managerId',
+                message: "Who is the employee's manager?",
+                choices: managerChoices
+              })
+                .then(answer => {
+                  let employee = {
+                    manager_id: answer.managerId,
+                    role_id: roleId,
+                    first_name: firstName,
+                    last_name: lastName
+                  }
+                  db.createEmployee(employee)
                 })
+                .then(() => start())
             })
-        });
+        })
+    });
 
-    // prompt the user
+  // prompt the user
   inquirer.prompt([
     {
       type: 'input',
@@ -232,15 +235,35 @@ const addRole = () => {
 
 
 const updateEmpRole = () => {
+  const query = `SELECT employee.first_name, role.title FROM employee JOIN role ON employee.role_id = role.id`;
 
-}
+  connection.query(query, (err, res) => {
+    if (err) throw err
+    console.log(res);
+    inquirer.prompt = ([
+      {
+        type: 'list',
+        name: 'lastname',
+        message: "What is the employee's last name?",
+        choices: () => {
+          let lastName = [];
+          for (let i = 0; i < res.length; i++) {
+            lastName.push(res[i].last_name);
+          }
+          return lastName;
+        },
+      },
+      {
+        type: 'list',
+        name: 'role',
+        message: "What is the employee's new role?",
+        choices: selectRole(),
+      }
+    ])
+  });
+};
 
 
 const exitApp = () => {
   Connection.end();
 }
-
-
-
-
-
