@@ -129,35 +129,116 @@ const addEmployee = () => {
                     message: "Who is the employee's manager?",
                     choices: managerChoices
                   })
-                  .then(answer => {
-                    let employee = {
-                      manager_id: answer.managerId,
-                      role_id: roleId,
-                      first_name: firstName,
-                      last_name: lastName
-                    }
-                    db.createEmployee(employee)
-                  })
-                  .then(() => start())
+                    .then(answer => {
+                      let employee = {
+                        manager_id: answer.managerId,
+                        role_id: roleId,
+                        first_name: firstName,
+                        last_name: lastName
+                      }
+                      db.createEmployee(employee)
+                    })
+                    .then(() => start())
                 })
             })
         });
     });
-  };
+};
 
-  const addRole = () => {
+const addRole = () => {
+  // find all departments first
+  let departments;
 
-  }
+  db.findAllDepartments()
+        .then(([rows]) => {
+          departments = rows
+          const departmentChoice = departments.map(({ id, title }) => ({
+            name: title,
+            value: id
+          }))
+          inquirer.prompt({
+            type: 'list',
+            name: 'roleId',
+            message: "What is the employee's role?",
+            choices: roleChoices
+          })
+            .then(answer => {
+              let roleId = answer.roleId
+              db.findAllEmployees()
+                .then(([rows]) => {
+                  let employees = rows
+                  const managerChoices = departments.map(({ id, first_name, last_name }) => ({
+                    name: `${first_name} ${last_name}`,
+                    value: id
+                  }))
+                  managerChoices.unshift({ name: 'None', value: NULL })
+                  inquirer.prompt({
+                    type: 'list',
+                    name: 'managerId',
+                    message: "Who is the employee's manager?",
+                    choices: managerChoices
+                  })
+                    .then(answer => {
+                      let employee = {
+                        manager_id: answer.managerId,
+                        role_id: roleId,
+                        first_name: firstName,
+                        last_name: lastName
+                      }
+                      db.createEmployee(employee)
+                    })
+                    .then(() => start())
+                })
+            })
+        });
+
+    // prompt the user
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'title',
+      message: "what is the new role title?"
+    },
+    {
+      type: 'input',
+      name: 'salary',
+      message: "what is the new role's salary?"
+    },
+    {
+      type: 'input',
+      name: 'department_id',
+      message: "what is the new role's department?",
+      choices: departments
+    }
+  ])
+    .then(answers => {
+      // what is the answer that we're using, what does it look like???
+      //console.log('answer looks like', answer);
+      // create your role object, which you will then pass into your class method below
+      let role = {
+        title: answers.title,
+        salary: answers.salary,
+        department_id: answers.department_id
+      }
+
+      // now pass in your role object, which has all the required fields for inserting a new
+      // role into your table, i.e. it has title, salary, and department_id
+      db.createNewRole(role)
+        .then(data => {
+          console.log('the data looks like', data);
+        })
+    });
+}
 
 
-  const updateEmpRole = () => {
+const updateEmpRole = () => {
 
-  }
+}
 
 
-  const exitApp = () => {
-    Connection.end();
-  }
+const exitApp = () => {
+  Connection.end();
+}
 
 
 
