@@ -7,9 +7,10 @@ This assignment required building a command-line application from scratch to man
 
 ## Table of Content
 * [Installation](#installation)
-* [Deployed Link](#deployed-link)
+* [Usage](#usage)
+* [Demo](#demo)
 * [License](#license)
-* [Information](#information)
+* [Contact Information](#contact-information)
 #
 
 ## User Story
@@ -44,17 +45,20 @@ THEN I am prompted to select an employee to update and their new role and this i
 ## Installation
 - Clone or Dowload as a zip file via Github
 - In the command line, enter "npm install inquirer" and "npm install mysql" if not done already.
+#
 
 ## Usage
-- Simply enter "npm start" to execute file.
+- Simply enter "npm start" to execute file in the command line.
 - Follow the prompts on what you would like to do.
 #
 
-## Deployed Link
+## Demo
 Click [here](https://serene-sea-42618.herokuapp.com/) for the demo video.
+#
 
 ## License 
 ![badge](https://img.shields.io/badge/license-MIT-orange) 
+#
 
 ## Contact Information
 
