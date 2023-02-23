@@ -126,11 +126,11 @@ const addEmployee = () => {
               db.findAllEmployees()
                 .then(([rows]) => {
                   let employees = rows
-                  const managerChoices = roles.map(({ id, first_name, last_name }) => ({
+                  const managerChoices = employees.map(({ id, first_name, last_name }) => ({
                     name: `${first_name} ${last_name}`,
                     value: id
                   }))
-                  managerChoices.unshift({ name: 'None', value: NULL })
+                  managerChoices.unshift({ name: 'None', value: null })
                   inquirer.prompt({
                     type: 'list',
                     name: 'managerId',
